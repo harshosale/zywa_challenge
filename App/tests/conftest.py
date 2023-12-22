@@ -8,7 +8,6 @@ from Database.create_defaults import create_super_admin, initial_setup
 
 @pytest_asyncio.fixture()
 async def client():
-    envVars.ZYWA_ENV = "test"
     for table in BaseModel.__subclasses__():
         table.create_table()
     initial_setup()
