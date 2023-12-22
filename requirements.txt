@@ -3,3 +3,4 @@ pydantic==1.10.2
 peewee==3.15.3
 psycopg2-binary==2.9.9
 uvicorn[standard]==0.19.0
+python-jose==3.3.0

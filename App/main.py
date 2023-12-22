@@ -1,11 +1,13 @@
 import fastapi
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Depends
 
 from Database.database import database
-from Database.create_defaults import initial_setup
+from Database.create_defaults import initial_setup, create_super_admin
 from Database.Models.users import Users
-import uuid
+from Routers import auth
 from Database.Models.cards import Cards, CardStatusResponseModel
+from uuid import UUID
+from Helper.oauth2 import get_current_user
 
 zywa_api = fastapi.FastAPI()
 
@@ -15,6 +17,7 @@ def startup_event():
     if database.is_closed():
         database.connect()
     initial_setup()
+    create_super_admin()
 
 
 @zywa_api.on_event("shutdown")
@@ -24,7 +27,9 @@ def shutdown_event():
 
 
 @zywa_api.get("/get_card_status", response_model=CardStatusResponseModel)
-def get_card_status(card_id: str, mobile_number: str):
+def get_card_status(
+    card_id: str, mobile_number: str, current_user: UUID = Depends(get_current_user)
+):
     users = Users.select().where(
         Users.mobile_number == mobile_number,
     )
@@ -51,3 +56,6 @@ def get_card_status(card_id: str, mobile_number: str):
     card = cards.dicts().get()
 
     return card
+
+
+zywa_api.include_router(auth.router)

@@ -7,6 +7,7 @@ from datetime import datetime
 import os
 from csv import DictReader
 from enum import Enum
+from Helper.env import envVars
 
 
 class Csv_Types(Enum):
@@ -106,3 +107,13 @@ def initial_setup():
                     ).where(
                         Cards.id == filtered_item["id"],
                     )
+
+
+def create_super_admin():
+    super_admin = Users.select().where(
+        Users.mobile_number == envVars.SUPER_ADMIN_MOBILE_NUMBER
+    )
+    if not super_admin:
+        Users.create(
+            **dict(UserCreateModel(mobile_number=envVars.SUPER_ADMIN_MOBILE_NUMBER))
+        )
