@@ -1,0 +1,39 @@
+version: '3'
+services:
+  zywa_api:
+    build: .
+    container_name: zywa_api
+    ports:
+      - 8888:8888
+    volumes:
+      - ./:/usr/src/zywa_challenge:ro
+    depends_on:
+      - db
+    command: uvicorn main:zywa_api --host 0.0.0.0 --port 8888 --reload
+    env_file:
+      - ./.env
+  
+  db:
+    image: postgres
+    container_name: db
+    ports:
+      - 5555:5432
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+  
+  db_test:
+    image: postgres
+    container_name: db_test
+    ports:
+      - 4444:5432
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}_test
+
+volumes:
+  postgres-db:

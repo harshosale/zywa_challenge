@@ -1,0 +1,25 @@
+version: '3'
+services:
+  zywa_api:
+    build: .
+    ports:
+      - 8888:8888
+    depends_on:
+      - postgres
+    command: uvicorn main:zywa_api --host 0.0.0.0 --port 8888
+    env_file:
+      - ./.env
+  
+  db:
+    image: postgres
+    ports:
+      - 5555:5432
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+
+volumes:
+  postgres-db:
