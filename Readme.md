@@ -1,7 +1,7 @@
 
 # Zywa-Backend
 
-checkout [here](http://localhost:8888)
+checkout [here](http://localhost:8888/docs)
 
 
 ## Installation
